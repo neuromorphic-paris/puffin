@@ -56,7 +56,7 @@ namespace puffin {
 ```cpp
 namespace puffin {
     /// make_server creates a server from functors.
-    template <typename HandleConnection, typename HandleMessage, typename HandleDisconnections>
+    template <typename HandleConnection, typename HandleMessage, typename HandleDisconnection>
     std::unique_ptr<server> make_server(
         uint16_t port,
         HandleConnection handle_connection,
@@ -68,7 +68,6 @@ namespace puffin {
 - The expression `handle_connection(id, url)`, where `id` is a is a `std::size_t` integer and `url` is a `std::string` object, must be valid and return a `puffin::message` object. `handle_connection` is called when a new client starts a connection. The returned message is sent to the newly connected client before any other message. If this message is empty, it is not sent.
 - The expression `handle_message(id, message)`, where `id` is a `std::size_t` integer and `message` is a `puffin::message` object, must be valid. `handle_message` is called when a client sends a message.
 - The expression `handle_disconnection(id)`, where `id` is a `std::size_t` integer, must be valid. `handle_disconnection` is called when a client is disconnected.
-- `certificate_filename` and `key_filename` are the paths (absolute or relative to the executable) to the SSL certificate and key files, respectively. When provided, `make_server` returns a secure WebSocket server instead of a standard WebSocket server.
 
 `handle_connection`, `handle_message` and `handle_disconnection` are always called from the same thread. Keeping track of connected clients by adding and removing them from a container can be done in the bodies of `handle_connection` and `handle_disconnection` without locks. However, this calling thread is not the main thread.
 
@@ -81,7 +80,7 @@ namespace puffin {
         /// broadcast sends a message to every connected client.
         virtual void broadcast(const message& socket_message);
 
-        /// send sends a message to the client with the gven id.
+        /// send sends a message to the client with the given id.
         virtual void send(std::size_t id, const message& socket_message);
 
         /// close terminates the connection with a client.

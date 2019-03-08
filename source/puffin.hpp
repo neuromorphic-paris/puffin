@@ -295,7 +295,7 @@ namespace puffin {
         /// broadcast sends a message to every connected client.
         virtual void broadcast(const message& socket_message) = 0;
 
-        /// send sends a message to the client with the gven id.
+        /// send sends a message to the client with the given id.
         virtual void send(std::size_t id, const message& socket_message) = 0;
 
         /// close terminates the connection with a client.
