@@ -14,13 +14,13 @@ cd third_party
 git submodule add https://github.com/neuromorphic-paris/puffin.git
 ```
 
-An application using Puffin must link to crypto and ssl. On __Linux__, the application must also link to pthread.
+On __Linux__, the application must link to pthread.
 
 # user guide
 
 The following example implements a Websocket server listening for connections on port `8080`, and sending the string `"ping"` to all its clients once every second:
 ```cpp
-#include "../source/puffin.hpp"
+#include "third_party/puffin/source/puffin.hpp"
 #include <chrono>
 
 int main(int argc, char* argv[]) {
@@ -64,16 +64,6 @@ namespace puffin {
         HandleConnection handle_connection,
         HandleMessage handle_message,
         HandleDisconnection handle_disconnection);
-
-    /// make_server creates a TLS server from functors.
-    template <typename HandleConnection, typename HandleMessage, typename HandleDisconnections>
-    std::unique_ptr<server> make_server(
-        const std::string& certificate_filename,
-        const std::string& key_filename,
-        uint16_t port,
-        HandleConnection handle_connection,
-        HandleMessage handle_message,
-        HandleDisconnection handle_disconnection);
 }
 ```
 - `port` is the TCP port to listen to.
@@ -103,20 +93,18 @@ namespace puffin {
 ```
 The methods exposed by `puffin::server` are thread-safe. Calls to `send_to` and `close` with an unknown client id do not throw exceptions. A server closes the connections to its clients when it goes out of scope.
 
-The following example implements a more complex server which prints client connections, messages and disconnections events to standard output. On connection, clients are sent the message `"welcome"`. When a client sends a message, the server sends the message `"pong"` back. The created server uses TLS:
+The following example implements a more complex server which prints client connections, messages and disconnections events to standard output. On connection, clients are sent the message `"welcome"`. When a client sends a message, the server sends the message `"pong"` back.
 ```cpp
-#include "../source/puffin.hpp"
+#include "third_party/puffin/source/puffin.hpp"
 #include <chrono>
 #include <iostream>
 
 int main(int argc, char* argv[]) {
     std::unique_ptr<puffin::server> server; // declare server first to use 'send' in a callback
     server = puffin::make_server(
-        "/path/to/certificate.crt",
-        "/path/to/key.key",
         8080,
         [](std::size_t id, const std::string& url) {
-            std::cout << id << " connected with url '" + url + "'" << std::endl;
+            std::cout << id << " connected with url '" << url << "'" << std::endl;
             return puffin::string_to_message("welcome");
         },
         [&](std::size_t id, const puffin::message& message) {
@@ -132,7 +120,6 @@ int main(int argc, char* argv[]) {
     }
     return 0;
 }
-
 ```
 
 # contribute
@@ -176,7 +163,7 @@ cd release
 ./puffin
 ```
 
-Then, open *test/puffin.html* with a web browser. You will need to add `test/puffin.crt` to your trusted certificates, since the example implements a secured WebSocket server.
+Then, open *test/puffin.html* with a web browser. Open the developer tools to see the logged messages.
 
 __Windows__ users must run `premake4 vs2010` instead, and open the generated solution with Visual Studio.
 
