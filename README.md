@@ -2,8 +2,6 @@
 
 # install
 
-## clone
-
 Within a Git repository, run the commands:
 
 ```sh
@@ -13,6 +11,8 @@ git submodule add https://github.com/neuromorphic-paris/puffin.git
 ```
 
 On __Linux__, the application must link to pthread.
+
+You can also add *source/puffin.hpp* to your project by copy-pasting.
 
 # user guide
 
