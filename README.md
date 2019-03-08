@@ -1,7 +1,5 @@
 ![puffin](banner.png "The Puffin banner")
 
-Puffin implements a WebSocket server.
-
 # install
 
 ## clone
