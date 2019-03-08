@@ -25,12 +25,12 @@ The following example implements a Websocket server listening for connections on
 
 int main(int argc, char* argv[]) {
     auto server = puffin::make_server(
-        8080,
-        [](std::size_t, const std::string&) {
-            return puffin::message{};
+        8080, // listening port
+        [](std::size_t, const std::string&) {       // connection callback
+            return puffin::message{};               // first response
         },
-        [](std::size_t, const puffin::message&) {},
-        [](std::size_t) {});
+        [](std::size_t, const puffin::message&) {}, // message callback
+        [](std::size_t) {});                        // disconnection callback
     for (;;) {
         server->broadcast(puffin::string_to_message("ping"));
         std::this_thread::sleep_for(std::chrono::seconds(1));
